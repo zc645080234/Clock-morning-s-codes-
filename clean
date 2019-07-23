@@ -1,0 +1,30 @@
+//
+import json
+import os
+os.chdir('/home/f6student01/script/')
+with open('data.txt') as file:
+    data = json.load(file)
+
+count = 0
+for d in data:
+    # data cleaning for Job Title
+    data[count]['Job Title'] = data[count]['Job Title'].translate({ord(i):None for i in '!@#$,.'})
+    # data cleaning for Experience (modify it to a list of past experience)
+    if data[count]['Experience'] == 'No results':
+        data[count].update({'Experience': ['No results']})
+        count += 1
+        continue
+    exp = data[count]['Experience'].split('\n')
+    experienceData = []
+    for e in exp:
+        parts = e.split('\t')
+        title = parts[0]
+        comp = parts[1]
+        dur = parts[2]
+        if(dur == 'No Expiration Data'):
+            dur = ''
+        experienceData.append({'Company': comp, 'Duration': dur, 'Title': title}) 
+    newExperience = {'Experience' : experienceData}
+    data[count].update(newExperience)
+    count += 1
+//
